@@ -20,11 +20,9 @@
             <th v-show="editTable">Delete</th>
           </tr>
 
-          <!-- Considered bad practice to update the value of a prop from within the same child component where it's
-          defined. Want to have only one source from which a prop can be updated to avoid conflicts. Should not update
-          the "present" value from within the StudentTable component. Instead emit event to App.vue when checkbox is
-          checked/unchecked and App.vue will update data. "Data down, events up" -->
-
+          <!-- Listen for events from child component StudentRow.vue: delete button clicked, present box checked/unchecked (v-on) -->
+          <!-- Pass student data from App.vue down to StudentRow.vue (v-bind) -->
+          <!-- Generate a StudentRow instance for each student in array (v-for) -->
           <student-row
               v-for="student in students"
               v-bind:student="student"
@@ -54,7 +52,7 @@ export default {
     StudentRow
   },
 
-  emits: ['student-arrived-or-left'],
+  emits: ['student-arrived-or-left','delete-student'],
 
   props: {
     students: Array,
@@ -67,13 +65,13 @@ export default {
   },
 
   methods: {
+    /* Emit event from child StudentRow.vue to parent App.vue */
     arrivedOrLeft(student, present) {
       this.$emit('student-arrived-or-left', student, present)
     },
+
     deleteStudent(student) {
-      if (confirm(`Delete ${this.student.name}?`)) {
-        this.$emit('delete-student', student)
-      }
+      this.$emit('delete-student', student)
     }
   }
 

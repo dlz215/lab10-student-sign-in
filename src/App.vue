@@ -10,7 +10,7 @@
     <student-table
         v-bind:students="students"
         v-on:student-arrived-or-left="studentArrivedOrLeft"
-        v-on:delete-student="deleteStudent"
+        v-on:delete-student="studentDeleted"
     ></student-table>
     <!-- v-bind is used to bind students array in parent to students prop value in child -->
 
@@ -57,23 +57,27 @@ export default {
 
     studentArrivedOrLeft(student, present) {
 
+      /* "find" method: loop through array, find array elements matching certain conditions */
       let updateStudent = this.students.find( (s) => {
         if (s.name === student.name && s.starID === student.starID) {
           return true
         }
       } )
 
+      /* if a matching student is found, update "present" value of that student to the one passed from StudentTable/StudentRow */
       if (updateStudent) {
         updateStudent.present = present
         this.mostRecentStudent = updateStudent
       }
     },
 
-    deleteStudent(student) {
+    studentDeleted(student) {
       /* filter method: returns new array composed of all elements for which the function returns true */
       this.students = this.students.filter( (s) => {
         if (s != student) {return true}
       } )
+      /* clear welcome/goodbye message */
+      this.mostRecentStudent = {}
     }
   }
 }
